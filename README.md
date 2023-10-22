@@ -50,7 +50,7 @@ The useState hook is a special function that takes the `initial state` as an `ar
 ```
 import React, { useState } from "react";
 ```
-#### we can use Hooks in Functional Components
+#### We can use Hooks in Functional Components
 ```
 const Example = (props) => {
   // You can use Hooks here!
