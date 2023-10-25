@@ -111,6 +111,11 @@
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .search {
     border: 1px solid #d6d6d6;
     padding: 10px;
@@ -130,4 +135,21 @@
 .login:hover {
     border-color: #f66d23;
     color: #f66d23;
+}
+
+.user-card {
+    padding: 10px 30px;
+    border: 1px solid black;
+    display: flex;
+    gap: 50px;
+}
+
+.user-card img {
+    border-radius: 50%;
+}
+
+.user-card .user-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
