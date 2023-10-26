@@ -1,30 +1,44 @@
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
 import { useEffect, useState } from "react";
-import { RESTAURANTS_API } from "./../utils/constants";
+import { LOCATION_API, RESTAURANTS_API } from "./../utils/constants";
 import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [restaurantList, setRestaurantList] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredResList, setFilteredResList] = useState([]);
+  const [location, setLocation] = useState("hyderabad");
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const data = await fetch(RESTAURANTS_API);
+    const locationData = await fetch(LOCATION_API + location);
+    const locationJson = await locationData.json();
+    const { lat, lon } = locationJson[0];
+
+    const data = await fetch(RESTAURANTS_API + `lat=${lat}&lng=${lon}`);
     const json = await data.json();
-    resData =
+    let resData =
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle
         ?.restaurants;
+
     resData = resData.map((res) => {
       return { data: res.info };
     });
     setRestaurantList(resData);
     setFilteredResList(resData);
   };
+
+  const onlineStatus = useOnlineStatus();
+  if (onlineStatus === false) {
+    return (
+      <h1>Seems like you're offline!!! Please check your internet connection.</h1>
+    )
+  }
 
   return (
     <div className="body">
@@ -55,14 +69,6 @@ const Body = () => {
             Search
           </button>
         </form>
-
-        <button
-          onClick={() => {
-            setFilteredResList(restaurantList);
-          }}
-        >
-          Show all restaurants
-        </button>
         <button
           onClick={() => {
             setFilteredResList(

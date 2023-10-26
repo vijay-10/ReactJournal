@@ -1,74 +1,64 @@
-# 1. How do you create `Nested Routes` react-router-dom configuration?
-A: We can create a `Nested Routes` inside a react router configuration as follows:
-first call createBrowserRouter for routing different pages
+# 1. When and why do we need `lazy()`?
+In React, the `lazy()` function is not a built-in JavaScript function; rather, it's a specific feature provided by React to enable code-splitting and improve the performance of your web applications. It allows you to lazily load components, meaning that these components are loaded and rendered only when they are needed, which can help reduce the initial load time of your application and improve the user experience. Here's when and why you might want to use `lazy()` in React:
+- Code-Splitting
+- Improved Initial Load Time
+- Reducing Network Load
+- Optimizing User Experience
+- Separating Heavy Components
+- Reducing JavaScript Parsing and Compilation Time
+Here's how you can use `lazy()` in React:
 ```
-const router = createBrowserRouter([
-   {
-      path: "/", // show path for routing
-      element: <Parent />, // show component for particular path
-      errorElement: <Error />, // show error component for path is different
-      children: [ // show children component for routing
-         {
-            path: "/path",
-            element: <Child />
-         }
-      ],
-   }
-])
+import React, { lazy, Suspense } from 'react';
+// Import a component lazily
+const LazyComponent = lazy(() => import('./LazyComponent'));
+function App() {
+  return (
+    <div>
+      {/* Use the Suspense component to handle loading */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyComponent />
+      </Suspense>
+    </div>
+  );
+}
+export default App;
 ```
-Now we can create a nested routing for `/path` using `children` again as follows:
+Keep in mind that you need to use the `Suspense` component to handle the loading state when using `lazy()`. Additionally, it's essential to understand the trade-offs and potential issues associated with code-splitting, such as the creation of additional HTTP requests and the need for effective bundling strategies to ensure a smooth user experience.
 
-```
-const router = createBrowserRouter([
-   {
-      path: "/",
-      element: <Parent />,
-      errorElement: <Error />,
-      children: [
-         {
-            path: "/path",
-            element: <Child />,
-            children: [ // nested routing for subchild
-               {
-                  path: "child",      // Don't use '/' because then react-router-dom will understand it it's the direct path
-                  element: <SubChild />,
-               }
-            ],
-         }
-      ],
-   }
-])
-```
+# 2. What is `Suspense`?
+`Suspense` is a component that was introduced to help manage asynchronous operations, particularly when dealing with code-splitting and data fetching in a React application. It allows you to gracefully handle loading states and errors while waiting for some asynchronous task, like component loading or data fetching, to complete. 
+In addition to code-splitting and component loading, `Suspense` can be used with data fetching libraries to manage data loading and error handling in a similar way. It helps in creating a more consistent and user-friendly experience in React applications where asynchronous operations are common.
 
-# 2. Read about `createHashRouter`, `createMemoryRouter` from React Router docs.
-A: `createHashRouter` is useful if you are unable to configure your web server to direct all traffic to your React Router application. Instead of using normal URLs, it will use the `hash (#)` portion of the URL to manage the "application URL".
-Other than that, it is functionally the same as `createBrowserRouter`.
-For more reference [Read more](https://reactrouter.com/en/main/routers/create-hash-router)
+# 3. Why we got this error: A component was suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix this, updates that suspend should be wrapped with start transition? How does suspense fix this error?
+The error message you mentioned, "A component was suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix this, updates that suspend should be wrapped with start transition," typically occurs in React when you have a situation where a component performs asynchronous work (like data fetching or code-splitting) while it's responding to a synchronous user input event, such as a click or keypress. This issue arises because React aims to provide a smooth and responsive user interface, and blocking synchronous user interactions while waiting for an asynchronous task to complete can result in a poor user experience.
+This error can be handled by using Suspence component which is a named component provided by the react library.
 
-`createMemoryRouter` Instead of using the browsers history a memory router manages it's own history stack in memory. It's primarily useful for testing and component development tools like Storybook, but can also be used for running React Router in any non-browser environment.
-For more reference [Read more](https://reactrouter.com/en/main/routers/create-memory-router)
+# 4. Advantages and Disadvantages of using this code splitting pattern?
+Code splitting, or the practice of breaking down a monolithic codebase into smaller, more manageable pieces, offers several advantages and disadvantages. It's important to carefully consider your specific use case and project requirements when deciding whether to use code splitting in your application.
+**Advantages of Code Splitting:**
+- Faster Initial Load Time
+- Improved Performance
+- Efficient Resource Utilization
+- Parallel Loading
+- Simplified Maintenance
+- Scalability:
+- Optimized Cachin
+**Disadvantages of Code Splitting:**
+- Complexity
+- Increased Latency for Initial Loads
+- Potential for "Flash of Loading Content" (FOUC)
+- Challenging Bundle Analysis
+- Compatibility and Browser Support
+- Tooling and Configuration
+In conclusion, code splitting is a valuable technique for optimizing web application performance, but it's not a one-size-fits-all solution. You should consider the specific needs and constraints of your project when deciding whether to use code splitting and how to implement it. When done correctly, it can significantly enhance the user experience by reducing initial load times and improving overall application performance.
 
-# 3. What is the order of life cycle method calls in `Class Based Components`?
-A: Following is the order of lifecycle methods calls in `Class Based Components`:
-1. constructor()
-2. render ()
-3. componentDidMount()
-4. componentDidUpdate()
-5. componentWillUnmount()
-For more reference [React-Lifecycle-methods-Diagram](https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/)
-
-# 4. Why do we use `componentDidMount`?
-A: The `componentDidMount()` method allows us to execute the React code when the component is already placed in the DOM (Document Object Model). This method is called during the Mounting phase of the React Life-cycle i.e after the component is rendered.
-We can run any piece of react code to modify the components. For ex. It's the best place to `make API calls`.
-
-# 5. Why do we use `componentWillUnmount`? Show with example.
-A: `componentWillUnmount()` is useful for the cleanup of the application when we switch routes from one place to another. Since we are working with a SPA(Single Page Application) the component process always runs in the background even if we switch to another route. So it is required to stop those processes before leaving the page. If we revisit the same page, a new process starts that affects the browser performance.
-For example, in Repo class, during `componentDidMount()` a timer is set with an interval of every one second to print in console. When the component is unmounted (users moves to a different page), the timer will be running in the background, which we might not even realize and causing huge performance issue. To avoid such situations the cleanup function can be done in componentWillUnmount, in this example `clearInterval`(timer) to clear the timer interval before unmounting Repo component.
-
-# 6. (Research) Why do we use `super(props)` in constructor?
-A: `super(props)` is used to inherit the properties and access of variables of the React parent class when we initialize our component.
-super() is used inside constructor of a class to derive the parent's all properties inside the class that extended it. If super() is not used, then Reference Error : Must call super constructor in derived classes before accessing 'this' or returning from derived constructor is thrown in the console.
-The main difference between super() and super(props) is the this.props is undefined in child's constructor in super() but this.props contains the passed props if super(props) is used.
-
-# 7. (Research) Why can't we have the `callback function` of `useEffect async`?
-A: `useEffect` expects it's callback function to return nothing or return a function (cleanup function that is called when the component is unmounted). If we make the callback function as `async`, it will return a `promise` and the promise will affect the clean-up function from being called.
+# 5. When do we and why do we need suspense?
+In React, Suspense is a component used to manage asynchronous operations, and it can be valuable in several scenarios for enhancing the user experience and managing complex asynchronous tasks. Here's when and why you might need to use Suspense:
+- Code Splitting with React.lazy()
+- Data Fetching with React Query, Relay, or GraphQL
+- Image Loading
+- Reducing Waterfall Requests
+- Server-Side Rendering (SSR) and Data Fetching
+- Handling Race Conditions
+- Improved User Experience
+- Error Handling
