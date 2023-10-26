@@ -35,6 +35,7 @@ This error can be handled by using Suspence component which is a named component
 
 # 4. Advantages and Disadvantages of using this code splitting pattern?
 Code splitting, or the practice of breaking down a monolithic codebase into smaller, more manageable pieces, offers several advantages and disadvantages. It's important to carefully consider your specific use case and project requirements when deciding whether to use code splitting in your application.
+
 **Advantages of Code Splitting:**
 - Faster Initial Load Time
 - Improved Performance
@@ -43,6 +44,7 @@ Code splitting, or the practice of breaking down a monolithic codebase into smal
 - Simplified Maintenance
 - Scalability:
 - Optimized Cachin
+
 **Disadvantages of Code Splitting:**
 - Complexity
 - Increased Latency for Initial Loads
@@ -50,6 +52,7 @@ Code splitting, or the practice of breaking down a monolithic codebase into smal
 - Challenging Bundle Analysis
 - Compatibility and Browser Support
 - Tooling and Configuration
+
 In conclusion, code splitting is a valuable technique for optimizing web application performance, but it's not a one-size-fits-all solution. You should consider the specific needs and constraints of your project when deciding whether to use code splitting and how to implement it. When done correctly, it can significantly enhance the user experience by reducing initial load times and improving overall application performance.
 
 # 5. When do we and why do we need suspense?
