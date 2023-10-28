@@ -1,67 +1,121 @@
-# 1. When and why do we need `lazy()`?
-In React, the `lazy()` function is not a built-in JavaScript function; rather, it's a specific feature provided by React to enable code-splitting and improve the performance of your web applications. It allows you to lazily load components, meaning that these components are loaded and rendered only when they are needed, which can help reduce the initial load time of your application and improve the user experience. Here's when and why you might want to use `lazy()` in React:
-- Code-Splitting
-- Improved Initial Load Time
-- Reducing Network Load
-- Optimizing User Experience
-- Separating Heavy Components
-- Reducing JavaScript Parsing and Compilation Time
-Here's how you can use `lazy()` in React:
+# 1. Explore all the ways of writing CSS.
+- Write styles in one stylesheet `index.css`
+- `SASS` or `SCSS`(Syntactically Awesome Style Sheets), not recommended for large-scale applications.
+- `Styled components` (very common and very popular)
+- `CSS Modules`
+- `Material UI` (MUI)
+- `Bootstrap`
+- `Chakra UI`
+- `Ant Design`
+- `TailwindCSS` (which we will be using the most)
+
+# 2. How do we configure tailwindcss?
+[I] Create your project
 ```
-import React, { lazy, Suspense } from 'react';
-// Import a component lazily
-const LazyComponent = lazy(() => import('./LazyComponent'));
-function App() {
-  return (
-    <div>
-      {/* Use the Suspense component to handle loading */}
-      <Suspense fallback={<div>Loading...</div>}>
-        <LazyComponent />
-      </Suspense>
-    </div>
-  );
+> mkdir my-project
+> cd my-project
+> npm init -y
+> npm install -D parcel
+> mkdir src
+> touch src/index.html
+```
+[II] Install Tailwind CSS
+```
+> npm install -D tailwindcss postcss
+> npx tailwindcss init
+```
+[III] Configure PostCSS
+
+`.postcssrc`
+```
+{
+  "plugins": {
+    "tailwindcss": {}
+  }
 }
-export default App;
 ```
-Keep in mind that you need to use the `Suspense` component to handle the loading state when using `lazy()`. Additionally, it's essential to understand the trade-offs and potential issues associated with code-splitting, such as the creation of additional HTTP requests and the need for effective bundling strategies to ensure a smooth user experience.
+[IV] Configure your template paths
 
-# 2. What is `Suspense`?
-`Suspense` is a component that was introduced to help manage asynchronous operations, particularly when dealing with code-splitting and data fetching in a React application. It allows you to gracefully handle loading states and errors while waiting for some asynchronous task, like component loading or data fetching, to complete. 
-In addition to code-splitting and component loading, `Suspense` can be used with data fetching libraries to manage data loading and error handling in a similar way. It helps in creating a more consistent and user-friendly experience in React applications where asynchronous operations are common.
+`tailwind.config.js`
+```
+module.exports = {
+  content: [
+    "./src/**/*.{html,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+[V] Add the Tailwind directives to your CSS
 
-# 3. Why we got this error: A component was suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix this, updates that suspend should be wrapped with start transition? How does suspense fix this error?
-The error message you mentioned, "A component was suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix this, updates that suspend should be wrapped with start transition," typically occurs in React when you have a situation where a component performs asynchronous work (like data fetching or code-splitting) while it's responding to a synchronous user input event, such as a click or keypress. This issue arises because React aims to provide a smooth and responsive user interface, and blocking synchronous user interactions while waiting for an asynchronous task to complete can result in a poor user experience.
-This error can be handled by using Suspence component which is a named component provided by the react library.
+`index.css`
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
 
-# 4. Advantages and Disadvantages of using this code splitting pattern?
-Code splitting, or the practice of breaking down a monolithic codebase into smaller, more manageable pieces, offers several advantages and disadvantages. It's important to carefully consider your specific use case and project requirements when deciding whether to use code splitting in your application.
+# 3.In tailwind.config.js, what does all the keys mean (content, theme, extend, plugins)
+In a Tailwind CSS configuration file (usually named `tailwind.config.js`), you can define various configuration options to customize the behavior and appearance of your Tailwind CSS setup. Here's what each of the keys in the configuration file means:
 
-**Advantages of Code Splitting:**
-- Faster Initial Load Time
-- Improved Performance
-- Efficient Resource Utilization
-- Parallel Loading
-- Simplified Maintenance
-- Scalability:
-- Optimized Cachin
+- **`content`**:
+   - This key is used to specify the source files that Tailwind CSS should analyze to generate the CSS classes. You define which files or patterns should be scanned to find the utility classes used in your project. By default, it looks for HTML, Vue, and Blade files.
+   - Example:
+     ```js
+     content: [
+       "./src/**/*.html",
+       "./src/**/*.vue",
+       "./src/**/*.jsx",
+       // ... other file patterns
+     ]
+     ```
 
-**Disadvantages of Code Splitting:**
-- Complexity
-- Increased Latency for Initial Loads
-- Potential for "Flash of Loading Content" (FOUC)
-- Challenging Bundle Analysis
-- Compatibility and Browser Support
-- Tooling and Configuration
+- **`theme`**:
+   - This key is where you can customize the default design system of Tailwind CSS. You can define colors, fonts, spacing, breakpoints, and more. It allows you to modify or extend the default values to fit your project's design requirements.
+   - Example:
+     ```js
+     theme: {
+       extend: {
+         colors: {
+           primary: "#FF5733",
+         },
+         fontFamily: {
+           sans: ["Nunito", ...],
+         },
+         // ... other theme settings
+       },
+     }
+     ```
 
-In conclusion, code splitting is a valuable technique for optimizing web application performance, but it's not a one-size-fits-all solution. You should consider the specific needs and constraints of your project when deciding whether to use code splitting and how to implement it. When done correctly, it can significantly enhance the user experience by reducing initial load times and improving overall application performance.
+- **`extend`**:
+   - The `extend` key is used to add additional CSS classes and styles that are not included in the default Tailwind CSS but are specific to your project. You can extend the utility classes and add new ones to suit your design needs.
+   - Example:
+     ```js
+     extend: {
+       spacing: {
+         "80": "20rem",
+       },
+       boxShadow: {
+         "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+       },
+       // ... other extended styles
+     }
+     ```
 
-# 5. When do we and why do we need suspense?
-In React, Suspense is a component used to manage asynchronous operations, and it can be valuable in several scenarios for enhancing the user experience and managing complex asynchronous tasks. Here's when and why you might need to use Suspense:
-- Code Splitting with React.lazy()
-- Data Fetching with React Query, Relay, or GraphQL
-- Image Loading
-- Reducing Waterfall Requests
-- Server-Side Rendering (SSR) and Data Fetching
-- Handling Race Conditions
-- Improved User Experience
-- Error Handling
+- **`plugins`**:
+   - The `plugins` key allows you to include third-party or custom plugins that can provide additional utility classes or functionality. Tailwind CSS has an ecosystem of plugins created by the community, and you can configure them here.
+   - Example:
+     ```js
+     plugins: [
+       require("@tailwindcss/forms"),
+       require("@tailwindcss/typography"),
+       // ... other plugins
+     ]
+     ```
+
+These keys allow you to customize various aspects of your Tailwind CSS project, from the source files you want to include in your build to the styles and utility classes you want to define or extend. By modifying these configuration options, you can tailor Tailwind CSS to match your specific project requirements.
+
+# 4. Why do we have .postcssrc file?
+The `.postcssrc` file, also known as `postcss.config.js`, is a configuration file used to set up and customize `PostCSS`, a tool for transforming CSS with JavaScript plugins. It is commonly used in modern front-end development, especially when working with tools like `webpack`, `Parcel`, or other build systems.
