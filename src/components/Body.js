@@ -1,9 +1,10 @@
 import RestaurantCard from "./RestaurantCard";
 import Shimmer from "./Shimmer";
-import { useEffect, useState } from "react";
-import { LOCATION_API, RESTAURANTS_API } from "./../utils/constants";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { RESTAURANTS_API } from "./../utils/constants";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
+
 
 const Body = () => {
   const [restaurantList, setRestaurantList] = useState([]);
@@ -14,17 +15,10 @@ const Body = () => {
   useEffect(() => {
     fetchData();
   }, [location]);
-  console.log(location);
   const fetchData = async () => {
     const data = await fetch(RESTAURANTS_API + `lat=${location[0]}&lng=${location[1]}`);
     const json = await data.json();
-    let resData =
-      json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle
-        ?.restaurants;
-
-    resData = resData.map((res) => {
-      return { data: res.info };
-    });
+    let resData = json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
     setRestaurantList(resData);
     setFilteredResList(resData);
   };
@@ -37,6 +31,8 @@ const Body = () => {
       </h1>
     );
   }
+
+  const { loggedInUser, setUserName } = useContext(UserContext);
 
   return (
     <div className="body">
@@ -51,10 +47,17 @@ const Body = () => {
               setSearchText(e.target.value);
               // this will filter simultaneously as we enter text:-
               const filteredList = restaurantList.filter((res) =>
-                res.data.name.toLowerCase().includes(searchText.toLowerCase())
+                res.info.name.toLowerCase().includes(searchText.toLowerCase())
               );
               setFilteredResList(filteredList);
             }}
+          ></input>
+          <input
+            type="text"
+            className="w-96 px-3 py-1 border-2 border-gray-400 rounded-md"
+            value={loggedInUser}
+            placeholder="Enter Username"
+            onChange={(e) => setUserName(e.target.value)}
           ></input>
           {/* <button
           className="px-4 py-2 rounded-md hover:shadow-md bg-gray-100 text-gray-600"
@@ -87,7 +90,7 @@ const Body = () => {
           className="px-4 py-2 w-48 text-black-600 font-semibold rounded-md hover:shadow-md hover:bg-orange-400 hover:text-white bg-gray-200"
             onClick={() => {
               setFilteredResList(
-                restaurantList.filter((res) => res.data.avgRating > 4)
+                restaurantList.filter((res) => res.info.avgRating > 4)
               );
             }}
           >
@@ -95,10 +98,10 @@ const Body = () => {
           </button>
         </div>
       </div>
-      {restaurantList.length ? (
+      {restaurantList?.length ? (
         <div className="res-container flex flex-wrap justify-between">
           {filteredResList.map((restaurant) => (
-            <RestaurantCard key={restaurant.data.id} resData={restaurant} />
+            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
           ))}
           {/* {filteredResList.map((restaurant) => (
             <Link key={restaurant.data.id} to={"/restaurants/"+restaurant.data.id}><RestaurantCard resData={restaurant} /></Link>
