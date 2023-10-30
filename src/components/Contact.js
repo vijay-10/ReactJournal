@@ -43,9 +43,9 @@ const Contact = () => {
     <div>
       <section className="bg-white">
         <div className="py-8 lg:py-6 px-4 mx-auto max-w-screen-md">
-          <h2 className="mb-4 text-4xl font-bold text-center text-gray-600">
+          <h1 className="mb-4 text-4xl font-bold text-center text-gray-600">
             Contact Us
-          </h2>
+          </h1>
           <form action="#" className="space-y-8">
             <div>
               <label

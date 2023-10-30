@@ -5,32 +5,30 @@ import ItemsList from "./ItemsList.js";
 
 const RestaurantCategory = ({ showItems, setIndex, index, category }) => {
   return (
-    <div className="">
+    <div
+      className={`hover:shadow-xl hover:py-5 hover:bg-orange-50 transition-all p-4 mb-2 ${
+        showItems ? "bg-orange-50" : "bg-gray-50"
+      }  border border-gray-300 rounded-lg shadow-md`}
+    >
       {/* Accordian header */}
-      <div
-        className={`hover:shadow-xl hover:py-5 hover:bg-orange-50 transition-all p-4 mb-2 ${
-          showItems ? "bg-orange-50" : "bg-gray-50"
-        }  border border-gray-300 rounded-lg shadow-md`}
-      >
-        <div className="flex justify-between cursor-pointer" onClick={setIndex}>
-          <span className="text-lg font-bold text-gray-600">
-            {category.title} (
-            {category?.itemCards?.length
-              ? `${category?.itemCards?.length} items`
-              : "Not available"}
-            )
-          </span>
-          <span className="text-2xl">
-            {showItems ? (
-              <BsArrowUpSquare className="text-red-500" />
-            ) : (
-              <BsArrowDownSquare className="text-green-400" />
-            )}
-          </span>
-        </div>
-        {/* Accordian body */}
-        {showItems && <ItemsList category={category} />}
+      <div className="flex justify-between cursor-pointer" onClick={setIndex}>
+        <span className="text-lg font-bold text-gray-600">
+          {category.title} (
+          {category?.itemCards?.length
+            ? `${category?.itemCards?.length} items`
+            : "Not available"}
+          )
+        </span>
+        <span className="text-2xl">
+          {showItems ? (
+            <BsArrowUpSquare className="text-red-500" />
+          ) : (
+            <BsArrowDownSquare className="text-green-400" />
+          )}
+        </span>
       </div>
+      {/* Accordian body */}
+      {showItems && <ItemsList items={category.itemCards} />}
     </div>
   );
 };

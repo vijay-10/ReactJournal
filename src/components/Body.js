@@ -51,14 +51,14 @@ const Body = () => {
               );
               setFilteredResList(filteredList);
             }}
-          ></input>
+          />
           <input
             type="text"
             className="w-96 px-3 py-1 border-2 border-gray-400 rounded-md"
             value={loggedInUser}
             placeholder="Enter Username"
             onChange={(e) => setUserName(e.target.value)}
-          ></input>
+          />
           {/* <button
           className="px-4 py-2 rounded-md hover:shadow-md bg-gray-100 text-gray-600"
             onClick={(e) => {
